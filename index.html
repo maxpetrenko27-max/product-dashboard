@@ -3,369 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
-    <!-- КРИТИЧНО ДЛЯ IFRAME: Разрешаем встраивание -->
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors *; script-src 'unsafe-inline' 'self'; style-src 'unsafe-inline' 'self'">
-    
-    <title>Product Delivery Dashboard</title>
+    <title>Product Delivery Dashboard v3</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
+        :root {
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-yellow-400: rgba(255, 193, 7, 1);
+            --color-green-400: rgba(76, 175, 80, 1);
+
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-border: rgba(94, 82, 64, 0.2);
+
+            --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-size-base: 14px;
+            --font-size-sm: 12px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
         }
-        body { 
-            background: #f5f5f5; 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-        }
-        h1 { 
-            color: #333; 
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        .info { 
-            color: #666; 
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        .phase { 
-            background: white; 
-            border: 2px solid #2196F3; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .phase-header { 
-            background: linear-gradient(135deg, #2196F3, #1976D2); 
-            color: white; 
-            padding: 16px; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            user-select: none;
-            transition: background 0.2s;
-        }
-        .phase-header:hover { 
-            background: linear-gradient(135deg, #1976D2, #1565C0); 
-        }
-        .phase-icon { 
-            font-size: 24px; 
-            margin-right: 12px;
-            display: inline-block;
-        }
-        .phase-title { 
-            font-size: 18px; 
-            font-weight: 600; 
-            flex: 1;
-            display: inline-block;
-        }
-        .phase-progress { 
-            background: rgba(255,255,255,0.3); 
-            padding: 6px 12px; 
-            border-radius: 4px; 
-            font-size: 14px;
-            white-space: nowrap;
-        }
-        .phase-content { 
-            padding: 16px; 
-            display: none;
-            animation: slideDown 0.2s ease-out;
-        }
-        .phase-content.active { 
-            display: block; 
-        }
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                max-height: 0;
-            }
-            to {
-                opacity: 1;
-                max-height: 1000px;
-            }
-        }
-        .task { 
-            background: #f9f9f9; 
-            border-left: 4px solid #2196F3; 
-            padding: 12px; 
-            margin-bottom: 8px; 
-            border-radius: 4px; 
-            display: flex; 
-            gap: 12px; 
-            align-items: flex-start;
-            transition: background 0.2s;
-        }
-        .task:hover {
-            background: #f0f8ff;
-        }
-        .task input { 
-            width: 20px; 
-            height: 20px; 
-            cursor: pointer; 
-            margin-top: 2px; 
-            accent-color: #2196F3; 
-            flex-shrink: 0;
-        }
-        .task-info { 
-            flex: 1;
-            word-break: break-word;
-        }
-        .task-name { 
-            font-weight: 500; 
-            color: #333;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .task-meta { 
-            font-size: 12px; 
-            color: #999; 
-            display: block;
-        }
-        .task.completed .task-name { 
-            text-decoration: line-through; 
-            color: #999; 
-        }
-        .btn { 
-            background: #2196F3; 
-            color: white; 
-            border: none; 
-            padding: 8px 16px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-size: 14px; 
-            margin-top: 12px;
-            transition: background 0.2s;
-            font-weight: 500;
-        }
-        .btn:hover { 
-            background: #1976D2; 
-        }
-        .btn:active {
-            transform: scale(0.98);
-        }
-        .input-new-task { 
-            width: 100%; 
-            padding: 8px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            margin-top: 8px;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        .input-new-task:focus {
-            outline: none;
-            border-color: #2196F3;
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-        }
-        .btn-add { 
-            width: 100%; 
-            margin-top: 8px;
-        }
-        .empty-message {
-            color: #999;
-            font-style: italic;
-            padding: 20px;
-            text-align: center;
+
+        * { box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+        body { background: var(--color-background); color: var(--color-text); font-family: var(--font-family-base); font-size: var(--font-size-base); padding: var(--space-20); overflow-y: auto; }
+
+        .header { margin-bottom: var(--space-32); }
+        .header h1 { margin: 0 0 var(--space-8) 0; font-size: var(--font-size-3xl); font-weight: 600; color: var(--color-slate-900); }
+        .header p { margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-lg); }
+
+        .overall-progress { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-20); margin-bottom: var(--space-24); box-shadow: var(--shadow-sm); }
+        .progress-label { display: flex; justify-content: space-between; margin-bottom: var(--space-12); font-weight: 550; }
+        .progress-bar-container { background: rgba(94, 82, 64, 0.1); border-radius: 999px; height: 24px; overflow: hidden; }
+        .progress-bar { background: linear-gradient(90deg, var(--color-teal-500), var(--color-teal-400)); height: 100%; border-radius: 999px; transition: width 150ms; display: flex; align-items: center; justify-content: center; color: white; font-size: var(--font-size-sm); font-weight: 600; min-width: 50px; }
+
+        .phases-container { display: flex; flex-direction: column; gap: var(--space-24); }
+        .phase-card { background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; transition: all 150ms; box-shadow: var(--shadow-sm); }
+        .phase-card:hover { box-shadow: var(--shadow-md); }
+
+        .phase-header { background: linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600)); color: white; padding: var(--space-16) var(--space-20); cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: 550; font-size: var(--font-size-lg); user-select: none; }
+        .phase-header:hover { background: linear-gradient(135deg, var(--color-teal-600), var(--color-teal-700)); }
+
+        .phase-header-content { display: flex; align-items: center; gap: var(--space-12); flex: 1; }
+        .phase-icon { font-size: var(--font-size-2xl); }
+        .phase-progress { margin-left: auto; display: flex; align-items: center; gap: var(--space-8); font-size: var(--font-size-sm); background: rgba(255, 255, 255, 0.2); padding: var(--space-4) var(--space-12); border-radius: 999px; }
+        .toggle-icon { font-size: var(--font-size-xl); transition: transform 150ms; }
+        .toggle-icon.collapsed { transform: rotate(-90deg); }
+
+        .phase-content { padding: var(--space-20); max-height: 5000px; overflow: visible; transition: all 150ms; }
+        .phase-content.collapsed { max-height: 0; padding: 0; overflow: hidden; }
+
+        .phase-meta { display: flex; gap: var(--space-16); margin-bottom: var(--space-20); align-items: flex-end; flex-wrap: wrap; }
+        .phase-meta-item { display: flex; flex-direction: column; gap: var(--space-4); }
+        .meta-label { font-size: var(--font-size-sm); color: var(--color-text-secondary); font-weight: 550; }
+        .meta-input { padding: var(--space-8) var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); font-family: var(--font-family-base); font-size: var(--font-size-base); color: var(--color-text); background: var(--color-background); }
+        .meta-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1); }
+
+        .subtask-header { display: flex; align-items: center; gap: var(--space-12); }
+        .subtask-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: var(--color-teal-500); flex-shrink: 0; }
+        .subtask-actions { display: flex; gap: var(--space-8); margin-left: auto; }
+        .btn-subtask { background: none; border: none; color: var(--color-teal-500); cursor: pointer; font-size: var(--font-size-sm); padding: var(--space-4) var(--space-6); transition: all 150ms; }
+        .btn-subtask:hover { color: var(--color-red-400); }
+
+        .phase-progress-bar { margin-bottom: var(--space-16); }
+        .task-list { display: flex; flex-direction: column; gap: var(--space-12); margin-bottom: var(--space-16); }
+
+        .task-item { background: var(--color-cream-50); border: 1px solid var(--color-border); border-radius: var(--radius-base); padding: var(--space-12); transition: all 150ms; }
+        .task-item:hover { background: rgba(33, 128, 141, 0.05); border-color: var(--color-teal-500); }
+        .task-item.completed { background: rgba(76, 175, 80, 0.05); border-color: var(--color-green-400); }
+
+        .task-main { display: flex; align-items: flex-start; gap: var(--space-12); }
+        .task-checkbox { width: 20px; height: 20px; cursor: pointer; margin-top: 2px; accent-color: var(--color-teal-500); flex-shrink: 0; }
+        .task-info { flex: 1; }
+        .task-name { font-weight: 550; margin: 0 0 var(--space-4) 0; color: var(--color-text); cursor: pointer; display: flex; align-items: center; gap: var(--space-8); }
+        .task-item.completed .task-name { text-decoration: line-through; color: var(--color-text-secondary); }
+
+        .subtask-toggle { font-size: var(--font-size-sm); transition: transform 150ms; cursor: pointer; }
+        .subtask-toggle.expanded { transform: rotate(90deg); }
+
+        .task-details { display: flex; gap: var(--space-16); flex-wrap: wrap; font-size: var(--font-size-sm); margin-top: var(--space-8); }
+        .detail-item { display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap; }
+        .detail-label { font-weight: 500; color: var(--color-text-secondary); }
+
+        .status-badge { display: inline-block; padding: var(--space-4) var(--space-8); border-radius: var(--radius-sm); font-size: var(--font-size-sm); font-weight: 550; }
+        .status-badge.not-started { background: rgba(167, 169, 169, 0.2); color: var(--color-gray-400); }
+        .status-badge.in-progress { background: rgba(255, 193, 7, 0.2); color: var(--color-orange-500); }
+        .status-badge.completed { background: rgba(76, 175, 80, 0.2); color: var(--color-green-400); }
+
+        .teams-list { display: flex; flex-wrap: wrap; gap: var(--space-8); }
+        .team-badge { background: var(--color-teal-500); color: white; padding: var(--space-4) var(--space-8); border-radius: var(--radius-sm); font-size: var(--font-size-sm); font-weight: 500; }
+
+        .jira-link { color: var(--color-teal-500); text-decoration: none; font-weight: 500; }
+        .jira-link:hover { text-decoration: underline; }
+
+        .task-actions { display: flex; gap: var(--space-8); flex-shrink: 0; margin-left: auto; }
+        .btn-small { background: none; border: none; color: var(--color-teal-500); cursor: pointer; font-size: var(--font-size-sm); padding: var(--space-4) var(--space-8); border-radius: var(--radius-sm); transition: all 150ms; }
+        .btn-small:hover { background: var(--color-teal-500); color: white; }
+        .btn-small.delete { color: var(--color-red-400); }
+        .btn-small.delete:hover { background: var(--color-red-400); color: white; }
+
+        .subtasks-container { margin-left: var(--space-24); margin-top: var(--space-12); display: flex; flex-direction: column; gap: var(--space-8); border-left: 2px solid rgba(33, 128, 141, 0.3); padding-left: var(--space-12); }
+        .subtask-item { background: rgba(33, 128, 141, 0.02); padding: var(--space-8); border-radius: var(--radius-base); font-size: var(--font-size-sm); color: var(--color-text); display: flex; align-items: center; gap: var(--space-8); }
+        .subtask-item.completed { opacity: 0.6; }
+        .subtask-item.completed .subtask-text { text-decoration: line-through; }
+        .subtask-text { flex: 1; }
+
+        .add-subtask-input { width: calc(100% - var(--space-32)); padding: var(--space-6) var(--space-10); border: 1px solid var(--color-border); border-radius: var(--radius-base); font-family: var(--font-family-base); font-size: var(--font-size-sm); color: var(--color-text); background: var(--color-background); }
+        .add-subtask-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1); }
+        .add-subtask-btn { background: var(--color-teal-500); color: white; padding: var(--space-4) var(--space-8); border: none; border-radius: var(--radius-base); font-size: var(--font-size-sm); font-weight: 500; cursor: pointer; transition: all 150ms; }
+        .add-subtask-btn:hover { background: var(--color-primary-hover); }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); overflow-y: auto; }
+        .modal.open { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--color-surface); padding: var(--space-24); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; margin: auto; }
+        .modal-header { font-size: var(--font-size-xl); font-weight: 600; margin-bottom: var(--space-20); display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { background: none; border: none; font-size: var(--font-size-xl); cursor: pointer; color: var(--color-text-secondary); }
+
+        .form-group { margin-bottom: var(--space-16); }
+        .form-label { display: block; font-weight: 500; margin-bottom: var(--space-8); font-size: var(--font-size-sm); }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: var(--space-8) var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); font-family: var(--font-family-base); font-size: var(--font-size-base); color: var(--color-text); background: var(--color-background); }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1); }
+
+        .button-group { display: flex; gap: var(--space-12); justify-content: flex-end; margin-top: var(--space-24); }
+        .btn { padding: var(--space-8) var(--space-16); border: none; border-radius: var(--radius-base); font-size: var(--font-size-base); font-weight: 500; cursor: pointer; transition: all 150ms; }
+        .btn-primary { background: var(--color-primary); color: white; }
+        .btn-primary:hover { background: var(--color-primary-hover); }
+        .btn-secondary { background: rgba(94, 82, 64, 0.1); color: var(--color-text); }
+        .btn-secondary:hover { background: rgba(94, 82, 64, 0.2); }
+
+        .add-task-btn { background: var(--color-teal-500); color: white; padding: var(--space-8) var(--space-16); border: none; border-radius: var(--radius-base); font-weight: 500; cursor: pointer; margin-top: var(--space-16); transition: all 150ms; }
+        .add-task-btn:hover { background: var(--color-primary-hover); }
+
+        @media (max-width: 768px) {
+            body { padding: var(--space-12); }
+            .task-main { flex-direction: column; }
+            .task-actions { margin-left: 0; }
+            .task-details { flex-direction: column; gap: var(--space-8); }
+            .phase-meta { flex-direction: column; gap: var(--space-12); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="header">
         <h1>🚀 Product Delivery Dashboard</h1>
-        <p class="info">✅ Персональный трекер - данные сохраняются в браузере</p>
-        
-        <div id="phasesContainer"></div>
+        <p>Keep your hand on the pulse of your product launch</p>
+    </div>
+
+    <div class="overall-progress">
+        <div class="progress-label">
+            <span>Overall Project Progress</span>
+            <span id="overallPercent">0%</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="overallProgressBar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="phases-container" id="phasesContainer"></div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Edit Task</span>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
     </div>
 
     <script>
-        const STORAGE_KEY = 'dashboard_data_v2';
-        
-        let storage = {};
-        let useLocalStorage = true;
-        
-        try {
-            localStorage.getItem('test');
-        } catch (e) {
-            useLocalStorage = false;
-            console.warn('localStorage недоступен, используем память браузера');
-        }
+        const defaultData = {
+            phases: [
+                { id: 1, name: "Preparation", icon: "📋", startDate: "", endDate: "", isFromWBS: true, tasks: [
+                    { id: 1, name: "Documentation", teams: ["POM & BA"], date: "", jiraLink: "", status: "not-started", subTasks: ["Concept", "Game Mechanics Specs", "Game Flow Diagram", "Game & Bet Classification", "Data Model"], isFromWBS: true },
+                    { id: 2, name: "Page Creation", teams: ["POM & BA"], date: "", jiraLink: "", status: "not-started", subTasks: ["JIRA Project & Backlog", "Preliminary Timeline", "High Level Plan"], isFromWBS: true },
+                    { id: 3, name: "Create Checklists", teams: ["POM & BA"], date: "", jiraLink: "", status: "not-started", subTasks: ["Data Checklist", "New Live Game Checklist", "Integration Checklist", "Lobby Checklist"], isFromWBS: true }
+                ]},
+                { id: 2, name: "Playable Game", icon: "🎮", startDate: "", endDate: "", isFromWBS: true, tasks: [
+                    { id: 4, name: "Project Set up", teams: ["Dev Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["Game Classification", "Table Accessibility", "Bet Classification", "Bet Codes", "Dealer Module", "AG Integration", "Bootstrap Automation"], isFromWBS: true },
+                    { id: 5, name: "Game Cycle", teams: ["Dev Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["Game Phases", "Dealer Module", "OW Interaction"], isFromWBS: true },
+                    { id: 6, name: "Game Mechanics", teams: ["Dev Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["Game Logic", "Betting Logic", "Bet Validation", "Payout Logic", "DWH Application"], isFromWBS: true },
+                    { id: 7, name: "Automation Coverage", teams: ["QA Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["Unit Test (BE/FE)", "Integration Test (BE/FE)", "Visual regression Test"], isFromWBS: true },
+                    { id: 8, name: "Trigger Bonus Game/s", teams: ["Dev Team", "QA Team"], date: "", jiraLink: "", status: "not-started", isFromWBS: true },
+                    { id: 9, name: "Unreal Set up", teams: ["Dev Team", "QA Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["BE connection", "Logic triggers"], isFromWBS: true }
+                ]},
+                { id: 3, name: "Certifiable Game", icon: "🎯", startDate: "", endDate: "", isFromWBS: true, tasks: [
+                    { id: 10, name: "Document Submission", teams: ["POM & BA"], date: "", jiraLink: "", status: "not-started", subTasks: ["Specification", "Error Handling Procedures", "Jurisdiction Requirements", "Math Simulation", "Critical Files"], isFromWBS: true },
+                    { id: 11, name: "Studio Device connections", teams: ["Dev Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["ATEM Camera switch", "Game device", "Trigger device"], isFromWBS: true },
+                    { id: 12, name: "Game History and Details", teams: ["Dev Team", "QA Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["Game History and Details", "Error Handling scenarios", "Help/Game Rules", "Autoplay", "Statistics"], isFromWBS: true },
+                    { id: 13, name: "Automation Coverage", teams: ["QA Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["E2E Test"], isFromWBS: true },
+                    { id: 14, name: "Additional betting features", teams: ["Dev Team", "QA Team"], date: "", jiraLink: "", status: "not-started", isFromWBS: true }
+                ]},
+                { id: 4, name: "Presentable Game", icon: "✨", startDate: "", endDate: "", isFromWBS: true, tasks: [
+                    { id: 15, name: "Look and Feel", teams: ["Design"], date: "", jiraLink: "", status: "not-started", subTasks: ["Design", "Animations", "Logo and Loading screens"], isFromWBS: true },
+                    { id: 16, name: "Music & Sound effects", teams: ["Sound"], date: "", jiraLink: "", status: "not-started", isFromWBS: true },
+                    { id: 17, name: "Studio Effects", teams: ["Dev Team", "IT Army"], date: "", jiraLink: "", status: "not-started", subTasks: ["OLC", "CasparCG"], isFromWBS: true },
+                    { id: 18, name: "Refine Unreal content", teams: ["Dev Team", "Artist"], date: "", jiraLink: "", status: "not-started", isFromWBS: true }
+                ]},
+                { id: 5, name: "Rollout Ready", icon: "🚀", startDate: "", endDate: "", isFromWBS: true, tasks: [
+                    { id: 19, name: "Additional Features", teams: ["Dev Team"], date: "", jiraLink: "", status: "not-started", subTasks: ["Game Calculator", "Reward Games", "Play for Fun", "VIP Limits"], isFromWBS: true },
+                    { id: 20, name: "Deployment", teams: ["Dev Ops"], date: "", jiraLink: "", status: "not-started", subTasks: ["Data Checklist", "Integration Checklist", "Load Test", "Ready for Live Checklist", "DWH Checklist", "Monitoring", "Uptime metrics", "Live Support Page", "Rollout Page"], isFromWBS: true },
+                    { id: 21, name: "Unreal Deployment checklist", teams: ["Dev Team"], date: "", jiraLink: "", status: "not-started", isFromWBS: true }
+                ]}
+            ]
+        };
 
-        function getDefaultData() {
-            return {
-                phases: [
-                    { 
-                        id: 1, 
-                        name: "Preparation", 
-                        icon: "📋", 
-                        tasks: [
-                            { id: 1, name: "Documentation", teams: "POM & BA", completed: false },
-                            { id: 2, name: "Page Creation", teams: "POM & BA", completed: false }
-                        ]
-                    },
-                    { id: 2, name: "Playable Game", icon: "🎮", tasks: [] },
-                    { id: 3, name: "Certifiable Game", icon: "🎯", tasks: [] },
-                    { id: 4, name: "Presentable Game", icon: "✨", tasks: [] },
-                    { id: 5, name: "Rollout Ready", icon: "🚀", tasks: [] }
-                ]
-            };
-        }
+        let data = JSON.parse(localStorage.getItem('productDeliveryData')) || JSON.parse(JSON.stringify(defaultData));
+        let expandedTasks = {};
 
-        function loadData() {
-            try {
-                let data;
-                if (useLocalStorage) {
-                    const saved = localStorage.getItem(STORAGE_KEY);
-                    data = saved ? JSON.parse(saved) : null;
-                } else {
-                    data = storage.data || null;
-                }
-                return data || getDefaultData();
-            } catch (err) {
-                console.error('Ошибка при загрузке данных:', err);
-                return getDefaultData();
-            }
-        }
-
-        function saveData(data) {
-            try {
-                if (useLocalStorage) {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-                } else {
-                    storage.data = data;
-                }
-                renderUI();
-            } catch (err) {
-                console.error('Ошибка при сохранении данных:', err);
-                renderUI();
-            }
-        }
+        function saveData() { localStorage.setItem('productDeliveryData', JSON.stringify(data)); }
 
         function renderUI() {
-            const data = loadData();
             const container = document.getElementById('phasesContainer');
-            
             if (!container) return;
-            
-            container.innerHTML = data.phases.map(phase => {
-                const completed = phase.tasks.filter(t => t.completed).length;
-                const total = phase.tasks.length;
-                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-                const tasksHtml = phase.tasks.length > 0 
-                    ? phase.tasks.map(task => `
-                        <div class="task ${task.completed ? 'completed' : ''}">
-                            <input type="checkbox" ${task.completed ? 'checked' : ''} 
-                                onchange="toggleTask(${phase.id}, ${task.id})">
+            container.innerHTML = '';
+            let totalTasks = 0;
+            let completedTasks = 0;
+
+            data.phases.forEach(phase => {
+                totalTasks += phase.tasks.length;
+                completedTasks += phase.tasks.filter(t => t.status === 'completed').length;
+
+                const phaseCompleted = phase.tasks.filter(t => t.status === 'completed').length;
+                const phasePercent = phase.tasks.length > 0 ? Math.round((phaseCompleted / phase.tasks.length) * 100) : 0;
+
+                const tasksHTML = phase.tasks.map(task => {
+                    const hasSubtasks = task.subTasks && task.subTasks.length > 0;
+                    const isExpanded = expandedTasks[`${phase.id}-${task.id}`];
+                    const subtasksHTML = hasSubtasks ? `<div class="subtasks-container" id="subtasks-${phase.id}-${task.id}" style="display: ${isExpanded ? 'flex' : 'none'};">
+                        ${task.subTasks.map((st, idx) => {
+                            const completed = typeof st === 'object' ? st.completed : false;
+                            const text = typeof st === 'object' ? st.text : st;
+                            return `<div class="subtask-item ${completed ? 'completed' : ''}">
+                                <input type="checkbox" class="subtask-checkbox" ${completed ? 'checked' : ''} onchange="toggleSubtask(${phase.id}, ${task.id}, ${idx})">
+                                <span class="subtask-text">${text}</span>
+                                <button class="btn-subtask" onclick="deleteSubtask(${phase.id}, ${task.id}, ${idx})">✕</button>
+                            </div>`;
+                        }).join('')}
+                        <div style="margin-top: var(--space-8); display: flex; gap: var(--space-8);">
+                            <input type="text" class="add-subtask-input" id="new-subtask-${phase.id}-${task.id}" placeholder="Add new subtask...">
+                            <button class="add-subtask-btn" onclick="addSubtask(${phase.id}, ${task.id})">+</button>
+                        </div>
+                    </div>` : '';
+
+                    return `<div class="task-item ${task.status === 'completed' ? 'completed' : ''}" id="task-${phase.id}-${task.id}">
+                        <div class="task-main">
+                            <input type="checkbox" class="task-checkbox" ${task.status === 'completed' ? 'checked' : ''} onchange="toggleTask(${phase.id}, ${task.id})">
                             <div class="task-info">
-                                <span class="task-name">${escapeHtml(task.name)}</span>
-                                <span class="task-meta">${escapeHtml(task.teams)}</span>
+                                <div class="task-name">
+                                    ${hasSubtasks ? `<span class="subtask-toggle ${isExpanded ? 'expanded' : ''}" onclick="toggleSubtasks(${phase.id}, ${task.id})">▶</span>` : ''}
+                                    ${task.name}
+                                </div>
+                                <div class="task-details">
+                                    <div class="detail-item"><span class="detail-label">Status:</span><span class="status-badge ${task.status}">${task.status.replace('-', ' ').toUpperCase()}</span></div>
+                                    ${task.date ? `<div class="detail-item"><span class="detail-label">📅</span><span>${task.date}</span></div>` : ''}
+                                    ${task.teams && task.teams.length > 0 ? `<div class="detail-item"><span class="detail-label">Teams:</span><div class="teams-list">${task.teams.map(t => `<span class="team-badge">${t}</span>`).join('')}</div></div>` : ''}
+                                    ${task.jiraLink ? `<div class="detail-item"><a class="jira-link" href="${task.jiraLink}" target="_blank">🔗 Jira</a></div>` : ''}
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-small" onclick="openEditModal(${phase.id}, ${task.id})">Edit</button>
+                                ${!task.isFromWBS ? `<button class="btn-small delete" onclick="deleteTask(${phase.id}, ${task.id})">Delete</button>` : ''}
                             </div>
                         </div>
-                    `).join('')
-                    : '<div class="empty-message">Нет задач. Добавьте первую!</div>';
+                        ${subtasksHTML}
+                    </div>`;
+                }).join('');
 
-                return `
-                    <div class="phase">
-                        <div class="phase-header" onclick="togglePhase(${phase.id})" role="button" tabindex="0" aria-expanded="false">
+                const phaseCard = `<div class="phase-card">
+                    <div class="phase-header" onclick="togglePhase(${phase.id})">
+                        <div class="phase-header-content">
+                            <div class="phase-icon">${phase.icon}</div>
                             <div>
-                                <span class="phase-icon">${phase.icon}</span>
-                                <span class="phase-title">${escapeHtml(phase.name)}</span>
+                                <div style="font-size: var(--font-size-xl);">${phase.name}</div>
                             </div>
-                            <div class="phase-progress">${completed}/${total} (${percent}%)</div>
                         </div>
-                        <div class="phase-content" id="phase-${phase.id}">
-                            ${tasksHtml}
-                            
-                            <div style="margin-top: 12px;">
-                                <input type="text" class="input-new-task" id="new-task-${phase.id}" 
-                                    placeholder="Добавить новую задачу...">
-                                <button class="btn btn-add" onclick="addTask(${phase.id})">+ Добавить</button>
-                            </div>
+                        <div class="phase-progress">
+                            <span>${phaseCompleted}/${phase.tasks.length}</span>
+                            <div class="toggle-icon" id="toggle-${phase.id}">▼</div>
                         </div>
                     </div>
-                `;
-            }).join('');
-        }
+                    <div class="phase-content" id="content-${phase.id}">
+                        <div class="phase-meta">
+                            <div class="phase-meta-item">
+                                <label class="meta-label">Start Date</label>
+                                <input type="date" class="meta-input" id="start-date-${phase.id}" value="${phase.startDate || ''}" onchange="updatePhaseTimeframe(${phase.id})">
+                            </div>
+                            <div class="phase-meta-item">
+                                <label class="meta-label">End Date</label>
+                                <input type="date" class="meta-input" id="end-date-${phase.id}" value="${phase.endDate || ''}" onchange="updatePhaseTimeframe(${phase.id})">
+                            </div>
+                        </div>
+                        <div class="phase-progress-bar">
+                            <div class="progress-label"><span>Phase Progress</span><span>${phasePercent}%</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar" style="width: ${phasePercent}%"></div></div>
+                        </div>
+                        <div class="task-list">${tasksHTML}</div>
+                        <button class="add-task-btn" onclick="openAddTaskModal(${phase.id})">+ Add New Task</button>
+                    </div>
+                </div>`;
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+                container.insertAdjacentHTML('beforeend', phaseCard);
+            });
+
+            updateOverallProgress();
         }
 
         function togglePhase(phaseId) {
-            const el = document.getElementById(`phase-${phaseId}`);
-            if (el) {
-                el.classList.toggle('active');
-                const header = el.previousElementSibling;
-                if (header) {
-                    header.setAttribute('aria-expanded', el.classList.contains('active'));
-                }
+            const content = document.getElementById(`content-${phaseId}`);
+            const toggle = document.getElementById(`toggle-${phaseId}`);
+            if (content && toggle) {
+                content.classList.toggle('collapsed');
+                toggle.classList.toggle('collapsed');
+            }
+        }
+
+        function toggleSubtasks(phaseId, taskId) {
+            const key = `${phaseId}-${taskId}`;
+            expandedTasks[key] = !expandedTasks[key];
+            const container = document.getElementById(`subtasks-${phaseId}-${taskId}`);
+            const toggle = document.querySelector(`#task-${phaseId}-${taskId} .subtask-toggle`);
+            if (container && toggle) {
+                container.style.display = expandedTasks[key] ? 'flex' : 'none';
+                toggle.classList.toggle('expanded');
             }
         }
 
         function toggleTask(phaseId, taskId) {
-            const data = loadData();
             const phase = data.phases.find(p => p.id === phaseId);
+            const task = phase.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = task.status === 'completed' ? 'in-progress' : 'completed';
+                saveData();
+                renderUI();
+            }
+        }
+
+        function deleteTask(phaseId, taskId) {
+            if (confirm('Are you sure?')) {
+                const phase = data.phases.find(p => p.id === phaseId);
+                phase.tasks = phase.tasks.filter(t => t.id !== taskId);
+                saveData();
+                renderUI();
+            }
+        }
+
+        function updatePhaseTimeframe(phaseId) {
+            const phase = data.phases.find(p => p.id === phaseId);
+            const startInput = document.getElementById(`start-date-${phaseId}`);
+            const endInput = document.getElementById(`end-date-${phaseId}`);
             if (phase) {
-                const task = phase.tasks.find(t => t.id === taskId);
-                if (task) {
-                    task.completed = !task.completed;
-                    saveData(data);
-                }
+                if (startInput) phase.startDate = startInput.value;
+                if (endInput) phase.endDate = endInput.value;
+                saveData();
             }
         }
 
-        function addTask(phaseId) {
-            const input = document.getElementById(`new-task-${phaseId}`);
-            if (!input || !input.value.trim()) return;
-
-            const data = loadData();
+        function toggleSubtask(phaseId, taskId, subtaskIdx) {
             const phase = data.phases.find(p => p.id === phaseId);
-            if (!phase) return;
-
-            const newId = Math.max(...phase.tasks.map(t => t.id), 0) + 1;
-            
-            phase.tasks.push({
-                id: newId,
-                name: input.value.trim(),
-                teams: "Team",
-                completed: false
-            });
-            
-            input.value = '';
-            saveData(data);
-            
-            const phaseContent = document.getElementById(`phase-${phaseId}`);
-            if (phaseContent && !phaseContent.classList.contains('active')) {
-                togglePhase(phaseId);
+            const task = phase.tasks.find(t => t.id === taskId);
+            if (task && task.subTasks[subtaskIdx]) {
+                if (typeof task.subTasks[subtaskIdx] === 'string') {
+                    task.subTasks[subtaskIdx] = { text: task.subTasks[subtaskIdx], completed: true };
+                } else {
+                    task.subTasks[subtaskIdx].completed = !task.subTasks[subtaskIdx].completed;
+                }
+                saveData();
+                renderUI();
             }
         }
 
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && e.target.classList.contains('input-new-task')) {
-                const phaseId = parseInt(e.target.id.replace('new-task-', ''));
-                addTask(phaseId);
+        function deleteSubtask(phaseId, taskId, subtaskIdx) {
+            const phase = data.phases.find(p => p.id === phaseId);
+            const task = phase.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.subTasks.splice(subtaskIdx, 1);
+                saveData();
+                renderUI();
             }
-        });
+        }
 
-        document.addEventListener('DOMContentLoaded', renderUI);
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', renderUI);
-        } else {
+        function addSubtask(phaseId, taskId) {
+            const phase = data.phases.find(p => p.id === phaseId);
+            const task = phase.tasks.find(t => t.id === taskId);
+            const input = document.getElementById(`new-subtask-${phaseId}-${taskId}`);
+            if (task && input && input.value.trim()) {
+                task.subTasks.push({ text: input.value.trim(), completed: false });
+                saveData();
+                renderUI();
+            }
+        }
+
+        function updateOverallProgress() {
+            let total = 0, completed = 0;
+            data.phases.forEach(phase => {
+                phase.tasks.forEach(task => {
+                    total++;
+                    if (task.status === 'completed') completed++;
+                });
+            });
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            document.getElementById('overallPercent').textContent = `${percent}%`;
+            document.getElementById('overallProgressBar').style.width = `${percent}%`;
+        }
+
+        function openEditModal(phaseId, taskId) {
+            const phase = data.phases.find(p => p.id === phaseId);
+            const task = phase.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            document.getElementById('modalBody').innerHTML = `
+                <div class="form-group"><label class="form-label">Task Name</label><input class="form-input" type="text" id="taskName" value="${task.name}"></div>
+                <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="taskStatus">
+                    <option value="not-started" ${task.status === 'not-started' ? 'selected' : ''}>Not Started</option>
+                    <option value="in-progress" ${task.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                    <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                </select></div>
+                <div class="form-group"><label class="form-label">Teams Involved</label><input class="form-input" type="text" id="taskTeams" placeholder="Comma-separated" value="${task.teams ? task.teams.join(', ') : ''}"></div>
+                <div class="form-group"><label class="form-label">Target Date</label><input class="form-input" type="date" id="taskDate" value="${task.date || ''}"></div>
+                <div class="form-group"><label class="form-label">Jira Ticket Link</label><input class="form-input" type="url" id="taskJira" placeholder="https://jira.example.com/browse/PROJ-123" value="${task.jiraLink || ''}"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveTask(${phaseId}, ${taskId})">Save Changes</button>
+                </div>
+            `;
+            document.getElementById('editModal').classList.add('open');
+        }
+
+        function openAddTaskModal(phaseId) {
+            const maxTaskId = Math.max(...data.phases.flatMap(p => p.tasks.map(t => t.id)));
+            document.getElementById('modalBody').innerHTML = `
+                <div class="form-group"><label class="form-label">Task Name</label><input class="form-input" type="text" id="taskName" placeholder="Enter task name"></div>
+                <div class="form-group"><label class="form-label">Teams Involved</label><input class="form-input" type="text" id="taskTeams" placeholder="Comma-separated"></div>
+                <div class="form-group"><label class="form-label">Target Date</label><input class="form-input" type="date" id="taskDate"></div>
+                <div class="form-group"><label class="form-label">Jira Ticket Link</label><input class="form-input" type="url" id="taskJira" placeholder="https://jira.example.com/browse/PROJ-123"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="addTask(${phaseId}, ${maxTaskId + 1})">Add Task</button>
+                </div>
+            `;
+            document.getElementById('editModal').classList.add('open');
+        }
+
+        function saveTask(phaseId, taskId) {
+            const phase = data.phases.find(p => p.id === phaseId);
+            const task = phase.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            task.name = document.getElementById('taskName').value;
+            task.status = document.getElementById('taskStatus').value;
+            task.teams = document.getElementById('taskTeams').value.split(',').map(t => t.trim()).filter(t => t);
+            task.date = document.getElementById('taskDate').value;
+            task.jiraLink = document.getElementById('taskJira').value;
+            saveData();
+            closeModal();
             renderUI();
         }
+
+        function addTask(phaseId, newTaskId) {
+            const phase = data.phases.find(p => p.id === phaseId);
+            const name = document.getElementById('taskName').value;
+            if (!name.trim()) { alert('Task name is required'); return; }
+            phase.tasks.push({
+                id: newTaskId,
+                name: name,
+                teams: document.getElementById('taskTeams').value.split(',').map(t => t.trim()).filter(t => t),
+                date: document.getElementById('taskDate').value,
+                jiraLink: document.getElementById('taskJira').value,
+                status: 'not-started',
+                subTasks: [],
+                isFromWBS: false
+            });
+            saveData();
+            closeModal();
+            renderUI();
+        }
+
+        function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+
+        renderUI();
     </script>
 </body>
 </html>
