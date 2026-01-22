@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Delivery Dashboard v4</title>
+    <title>EvoDeliver</title>
     <style>
         :root {
             --color-cream-50: rgba(252, 252, 249, 1);
@@ -177,12 +178,494 @@
             .subtask-main { flex-direction: column; }
             .subtask-actions { margin-left: 0; margin-top: var(--space-8); }
         }
+    
+        /* Header layout with buttons */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--space-16);
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            padding: 8px 20px;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .header-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .modal-form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .modal-form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-base);
+            box-sizing: border-box;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+        }
+
+        .modal-btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        .modal-btn-secondary {
+            background-color: var(--color-gray-400);
+            color: white;
+        }
+
+        .modal-btn-danger {
+            background-color: var(--color-red-400);
+            color: white;
+        }
+
+        .color-picker-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-border);
+        }
+
+        /* Gantt Chart */
+        .gantt-section {
+            margin-bottom: var(--space-24);
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .gantt-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-16);
+            padding-bottom: var(--space-12);
+            border-bottom: 2px solid var(--color-border);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .gantt-title {
+            font-size: var(--font-size-2xl);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s;
+            font-size: var(--font-size-xl);
+        }
+
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .gantt-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: var(--font-size-sm);
+            background: var(--color-gray-400);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .btn-small:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: var(--color-green-400);
+        }
+
+        .btn-warning {
+            background: var(--color-orange-500);
+        }
+
+        /* Enhanced Gantt Grid */
+        .gantt-grid-container {
+            position: relative;
+            overflow-x: auto;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+        }
+
+        .gantt-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-width: 100%;
+        }
+
+        .gantt-milestones {
+            background: var(--color-cream-50);
+            border-right: 2px solid var(--color-border);
+            position: sticky;
+            left: 0;
+            z-index: 10;
+        }
+
+        .gantt-timeline {
+            position: relative;
+            min-width: max-content;
+        }
+
+        .gantt-milestone-header {
+            background: var(--color-primary);
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 11;
+        }
+
+        .gantt-timeline-months {
+            display: flex;
+            background: var(--color-primary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 9;
+        }
+
+        .gantt-month {
+            flex: 0 0 100px;
+            min-width: 100px;
+            text-align: center;
+            padding: 10px 5px;
+            border-right: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .gantt-milestone-cell {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            min-height: 48px;
+            background: var(--color-cream-50);
+        }
+
+        .gantt-milestone-cell:hover {
+            background: rgba(0,0,0,0.02);
+        }
+
+        .gantt-milestone-cell.dragging {
+            opacity: 0.5;
+            background: var(--color-teal-300);
+        }
+
+        .gantt-milestone-cell.drag-over {
+            border-top: 3px solid var(--color-primary);
+        }
+
+        .gantt-milestone-text {
+            flex: 1;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            max-width: 240px;
+            line-height: 1.3;
+        }
+
+        .gantt-bars-container {
+            position: relative;
+        }
+
+        .gantt-bar-cell {
+            position: relative;
+            border-bottom: 1px solid var(--color-border);
+            min-height: 48px;
+            min-width: max-content;
+        }
+
+        .gantt-bar {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 4px 8px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .gantt-bar:hover {
+            opacity: 0.8;
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        /* Separators */
+        .separator-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 8;
+        }
+
+        .gantt-separator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            cursor: ew-resize;
+            pointer-events: all;
+            transition: width 0.2s, opacity 0.2s;
+        }
+
+        .gantt-separator:hover {
+            width: 6px;
+            opacity: 0.9;
+        }
+
+        .gantt-separator.dragging {
+            width: 6px;
+            opacity: 0.9;
+            cursor: grabbing;
+        }
+
+        .separator-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 600;
+            color: black;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            pointer-events: none;
+            user-select: none;
+            letter-spacing: 0.5px;
+        }
+
+        .edit-icon {
+            color: var(--color-gray-400);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+        }
+
+        .teams-section {
+            padding-top: var(--space-16);
+            border-top: 2px solid var(--color-border);
+        }
+
+        .teams-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-12);
+        }
+
+        .teams-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .team-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--color-cream-50);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .team-tag:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .team-color-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚀 Product Delivery Dashboard</h1>
-        <p>Keep your hand on the pulse of your product launch</p>
+        <div class="header-left">
+            <h1>🚀 EvoDeliver</h1>
+            <p>Keep your hand on the pulse of your product launch</p>
+        </div>
+        <div class="header-buttons">
+            <button class="header-btn" id="browseBtn">Browse</button>
+            <button class="header-btn" id="loginBtn">Login</button>
+        </div>
+    </div>
+
+
+    <!-- Development Timelines Gantt Chart -->
+    <div class="gantt-section">
+        <div class="gantt-header-row" id="ganttToggle">
+            <div class="gantt-title">
+                <span class="collapse-icon" id="collapseIcon">▼</span>
+                <span>Development Timelines</span>
+            </div>
+            <div class="gantt-controls">
+                <button class="btn-small" id="editTimelineBtn" onclick="event.stopPropagation();">Edit Timeline</button>
+                <button class="btn-small btn-warning" id="addSeparatorBtn" onclick="event.stopPropagation();">+ Separator</button>
+            </div>
+        </div>
+
+        <div class="gantt-content" id="ganttContent">
+            <div class="gantt-grid-container">
+                <div class="gantt-grid">
+                    <div class="gantt-milestones">
+                        <div class="gantt-milestone-header">
+                            <span>Milestones</span>
+                            <button class="btn-small btn-success" id="addMilestoneBtn">+ Add</button>
+                        </div>
+                        <div id="ganttMilestonesList"></div>
+                    </div>
+
+                    <div class="gantt-timeline">
+                        <div class="gantt-timeline-months" id="ganttTimelineMonths"></div>
+                        <div class="gantt-bars-container" id="ganttBarsContainer">
+                            <div id="ganttBarsList"></div>
+                            <div class="separator-container" id="separatorContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="teams-section">
+                <div class="teams-header">
+                    <strong>TEAMS</strong>
+                    <button class="btn-small btn-success" id="addTeamBtn">+ Add Team</button>
+                </div>
+                <div class="teams-list" id="teamsList"></div>
+            </div>
+        </div>
     </div>
 
     <div class="overall-progress">
@@ -651,5 +1134,650 @@
 
         renderUI();
     </script>
+
+    <!-- Modals -->
+    <div id="browseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="browseModal">&times;</span>
+            <h2>Browse your projects</h2>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="loginModal">&times;</span>
+            <h2>Okta Verify</h2>
+        </div>
+    </div>
+
+    <div id="editTimelineModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="editTimelineModal">&times;</span>
+            <h2>Edit Timeline</h2>
+            <div class="modal-form-group">
+                <label>Start Date:</label>
+                <input type="date" id="timelineStartDate">
+            </div>
+            <div class="modal-form-group">
+                <label>End Date:</label>
+                <input type="date" id="timelineEndDate">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('editTimelineModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveTimeline()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editMilestoneModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="editMilestoneModal">&times;</span>
+            <h2>Edit Milestone</h2>
+            <input type="hidden" id="editMilestoneIndex">
+            <div class="modal-form-group">
+                <label>Milestone Name:</label>
+                <input type="text" id="milestoneName">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-danger" onclick="deleteMilestone()">Delete</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('editMilestoneModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveMilestone()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addMilestoneModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="addMilestoneModal">&times;</span>
+            <h2>Add New Milestone</h2>
+            <div class="modal-form-group">
+                <label>Milestone Name:</label>
+                <input type="text" id="newMilestoneName">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('addMilestoneModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="addNewMilestone()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editBarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="editBarModal">&times;</span>
+            <h2>Edit Timeline Bar</h2>
+            <input type="hidden" id="editBarIndex">
+            <div class="modal-form-group">
+                <label>Label:</label>
+                <input type="text" id="barLabel">
+            </div>
+            <div class="modal-form-group">
+                <label>Color:</label>
+                <div class="color-picker-container">
+                    <input type="color" id="barColor">
+                    <div class="color-preview" id="barColorPreview"></div>
+                </div>
+            </div>
+            <div class="modal-form-group">
+                <label>Start Date:</label>
+                <input type="date" id="barStartDate">
+            </div>
+            <div class="modal-form-group">
+                <label>End Date:</label>
+                <input type="date" id="barEndDate">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-danger" onclick="deleteBar()">Delete</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('editBarModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveBar()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addSeparatorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="addSeparatorModal">&times;</span>
+            <h2>Add Separator</h2>
+            <div class="modal-form-group">
+                <label>Separator Label:</label>
+                <input type="text" id="separatorLabel" placeholder="e.g., ICE 2026">
+            </div>
+            <div class="modal-form-group">
+                <label>Color:</label>
+                <div class="color-picker-container">
+                    <input type="color" id="separatorColor" value="#dc3545">
+                    <div class="color-preview" id="separatorColorPreview" style="background-color: #dc3545;"></div>
+                </div>
+            </div>
+            <div class="modal-form-group">
+                <label>Position (%):</label>
+                <input type="number" id="separatorPosition" min="0" max="100" value="50" step="1">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('addSeparatorModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="addNewSeparator()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editSeparatorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="editSeparatorModal">&times;</span>
+            <h2>Edit Separator</h2>
+            <input type="hidden" id="editSeparatorIndex">
+            <div class="modal-form-group">
+                <label>Separator Label:</label>
+                <input type="text" id="editSeparatorLabel">
+            </div>
+            <div class="modal-form-group">
+                <label>Color:</label>
+                <div class="color-picker-container">
+                    <input type="color" id="editSeparatorColor">
+                    <div class="color-preview" id="editSeparatorColorPreview"></div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-danger" onclick="deleteSeparator()">Delete</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('editSeparatorModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveSeparator()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addTeamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="addTeamModal">&times;</span>
+            <h2>Add New Team</h2>
+            <div class="modal-form-group">
+                <label>Team Name:</label>
+                <input type="text" id="newTeamName">
+            </div>
+            <div class="modal-form-group">
+                <label>Team Color:</label>
+                <div class="color-picker-container">
+                    <input type="color" id="newTeamColor" value="#32b8c6">
+                    <div class="color-preview" id="newTeamColorPreview" style="background-color: #32b8c6;"></div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('addTeamModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveNewTeam()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editTeamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="editTeamModal">&times;</span>
+            <h2>Edit Team</h2>
+            <input type="hidden" id="editTeamIndex">
+            <div class="modal-form-group">
+                <label>Team Name:</label>
+                <input type="text" id="editTeamName">
+            </div>
+            <div class="modal-form-group">
+                <label>Team Color:</label>
+                <div class="color-picker-container">
+                    <input type="color" id="editTeamColor">
+                    <div class="color-preview" id="editTeamColorPreview"></div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-danger" onclick="deleteTeam()">Delete</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('editTeamModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="saveTeam()">Save</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Gantt Data with separators
+        const ganttData = {
+            startDate: new Date('2025-06-01'),
+            endDate: new Date('2026-10-31'),
+            tasks: [
+                {name: 'Game concept ideation + draft math', start: '2025-06-01', end: '2025-06-28', color: '#FF6B6B', label: '4w'},
+                {name: 'Game design (UI/UX, Graphic)', start: '2025-07-01', end: '2025-08-24', color: '#4ECDC4', label: '8w'},
+                {name: 'Game design (Game Art)', start: '2025-07-15', end: '2025-09-21', color: '#4ECDC4', label: '10w'},
+                {name: 'Interim math files review', start: '2025-08-01', end: '2025-08-21', color: '#FF6B6B', label: '3w'},
+                {name: 'Game classification approval', start: '2025-08-15', end: '2025-08-28', color: '#95E1D3', label: '2w'},
+                {name: 'Bet classification approval', start: '2025-08-20', end: '2025-09-02', color: '#95E1D3', label: '2w'},
+                {name: 'Game development basic logic', start: '2025-09-01', end: '2025-12-21', color: '#FFD93D', label: '16w'},
+                {name: 'Server simulations', start: '2025-12-15', end: '2025-12-28', color: '#FFD93D', label: '2w'},
+                {name: 'Data model creation', start: '2025-10-01', end: '2025-10-21', color: '#FFD93D', label: '3w'},
+                {name: 'Data model sign-off', start: '2025-10-20', end: '2025-11-09', color: '#95E1D3', label: '3w'},
+                {name: 'Game development FRONTEND', start: '2025-11-01', end: '2026-01-25', color: '#FFD93D', label: '12w'},
+                {name: 'DWH events, GSA, GHA', start: '2026-01-01', end: '2026-01-28', color: '#FFD93D', label: '4w'},
+                {name: 'Back Office support', start: '2026-02-01', end: '2026-02-28', color: '#95E1D3', label: '4w'},
+                {name: 'Refund Tool', start: '2026-03-01', end: '2026-03-21', color: '#FFD93D', label: '3w'},
+                {name: 'Go Live Checklist', start: '2026-06-01', end: '2026-07-26', color: '#FFD93D', label: '8w'},
+                {name: 'Certification', start: '2026-07-01', end: '2026-08-25', color: '#A8E6CF', label: '8w'}
+            ],
+            teams: [
+                {name: 'Math team + PO', color: '#FF6B6B'},
+                {name: 'MOW game team', color: '#FFD93D'},
+                {name: 'Stakeholders', color: '#95E1D3'},
+                {name: 'Design', color: '#4ECDC4'},
+                {name: 'Certification', color: '#A8E6CF'}
+            ],
+            separators: [
+                {label: 'ICE 2026', position: 50, color: '#dc3545'}
+            ]
+        };
+
+        let draggedMilestone = null;
+        let draggedSeparator = null;
+        let separatorDragStartX = 0;
+
+        // Modal functions
+        function openModal(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Header buttons
+        document.getElementById('browseBtn').onclick = () => openModal('browseModal');
+        document.getElementById('loginBtn').onclick = () => openModal('loginModal');
+
+        // Close buttons
+        document.querySelectorAll('.close').forEach(btn => {
+            btn.onclick = function() {
+                closeModal(this.getAttribute('data-modal'));
+            };
+        });
+
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        };
+
+        // Color picker previews
+        ['barColor', 'newTeamColor', 'editTeamColor', 'separatorColor', 'editSeparatorColor'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', function() {
+                    document.getElementById(id + 'Preview').style.backgroundColor = this.value;
+                });
+            }
+        });
+
+        // Collapse/Expand Gantt
+        document.getElementById('ganttToggle').onclick = function() {
+            const content = document.getElementById('ganttContent');
+            const icon = document.getElementById('collapseIcon');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+                icon.classList.remove('collapsed');
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+                icon.classList.add('collapsed');
+            }
+        };
+
+        // Calculate total width based on timeline
+        function getTotalWidth() {
+            const months = Math.ceil((ganttData.endDate - ganttData.startDate) / (1000 * 60 * 60 * 24 * 30));
+            return months * 100;
+        }
+
+        // Generate timeline months
+        function generateTimeline() {
+            const container = document.getElementById('ganttTimelineMonths');
+            let html = '';
+            let current = new Date(ganttData.startDate);
+            while (current <= ganttData.endDate) {
+                html += `<div class="gantt-month">${current.toLocaleDateString('en-US', {month: 'short', year: '2-digit'})}</div>`;
+                current.setMonth(current.getMonth() + 1);
+            }
+            container.innerHTML = html;
+
+            // Set width for bars container
+            const totalWidth = getTotalWidth();
+            document.getElementById('ganttBarsContainer').style.minWidth = totalWidth + 'px';
+        }
+
+        // Calculate bar position
+        function calcBarPos(start, end) {
+            const totalDays = (ganttData.endDate - ganttData.startDate) / 86400000;
+            const startOffset = (new Date(start) - ganttData.startDate) / 86400000;
+            const duration = (new Date(end) - new Date(start)) / 86400000;
+            const totalWidth = getTotalWidth();
+            return {
+                left: Math.max(0, (startOffset / totalDays) * totalWidth),
+                width: Math.max(20, (duration / totalDays) * totalWidth)
+            };
+        }
+
+        // Render gantt chart with drag-drop
+        function renderGantt() {
+            const milestones = document.getElementById('ganttMilestonesList');
+            const bars = document.getElementById('ganttBarsList');
+
+            let mHtml = '', bHtml = '';
+            ganttData.tasks.forEach((task, i) => {
+                mHtml += `<div class="gantt-milestone-cell" draggable="true" data-index="${i}" 
+                          ondragstart="handleMilestoneDragStart(event, ${i})"
+                          ondragover="handleMilestoneDragOver(event)"
+                          ondrop="handleMilestoneDrop(event, ${i})"
+                          ondragend="handleMilestoneDragEnd(event)"
+                          onclick="editMilestone(${i})">
+                    <div class="gantt-milestone-text">${task.name}</div>
+                    <span class="edit-icon">✎</span>
+                </div>`;
+
+                const pos = calcBarPos(task.start, task.end);
+                bHtml += `<div class="gantt-bar-cell">
+                    <div class="gantt-bar" style="left:${pos.left}px;width:${pos.width}px;background:${task.color}" 
+                         onclick="editBar(${i})">${task.label || ''}</div>
+                </div>`;
+            });
+
+            milestones.innerHTML = mHtml;
+            bars.innerHTML = bHtml;
+
+            renderSeparators();
+        }
+
+        // Milestone drag-drop functions
+        function handleMilestoneDragStart(e, index) {
+            draggedMilestone = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleMilestoneDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+            return false;
+        }
+
+        function handleMilestoneDrop(e, dropIndex) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.currentTarget.classList.remove('drag-over');
+
+            if (draggedMilestone !== null && draggedMilestone !== dropIndex) {
+                const draggedTask = ganttData.tasks.splice(draggedMilestone, 1)[0];
+                ganttData.tasks.splice(dropIndex, 0, draggedTask);
+                renderGantt();
+            }
+            return false;
+        }
+
+        function handleMilestoneDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.gantt-milestone-cell').forEach(cell => {
+                cell.classList.remove('drag-over');
+            });
+            draggedMilestone = null;
+        }
+
+        // Render separators
+        function renderSeparators() {
+            const container = document.getElementById('separatorContainer');
+            const totalWidth = getTotalWidth();
+            let html = '';
+
+            ganttData.separators.forEach((sep, i) => {
+                const leftPos = (sep.position / 100) * totalWidth;
+                html += `<div class="gantt-separator" 
+                         style="left: ${leftPos}px; background-color: ${sep.color};"
+                         data-index="${i}"
+                         onmousedown="startSeparatorDrag(event, ${i})"
+                         onclick="editSeparatorClick(${i})">
+                    <div class="separator-label">${sep.label}</div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Separator dragging
+        function startSeparatorDrag(e, index) {
+            if (e.button !== 0) return;
+            e.stopPropagation();
+
+            draggedSeparator = index;
+            separatorDragStartX = e.clientX;
+            const separator = e.currentTarget;
+            separator.classList.add('dragging');
+
+            const onMouseMove = (moveEvent) => {
+                const deltaX = moveEvent.clientX - separatorDragStartX;
+                const totalWidth = getTotalWidth();
+                const currentLeft = parseFloat(separator.style.left);
+                const newLeft = Math.max(0, Math.min(totalWidth, currentLeft + deltaX));
+                const newPosition = (newLeft / totalWidth) * 100;
+
+                ganttData.separators[draggedSeparator].position = newPosition;
+                separator.style.left = newLeft + 'px';
+                separatorDragStartX = moveEvent.clientX;
+            };
+
+            const onMouseUp = () => {
+                separator.classList.remove('dragging');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                draggedSeparator = null;
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+
+        // Render teams
+        function renderTeams() {
+            const container = document.getElementById('teamsList');
+            let html = '';
+            ganttData.teams.forEach((team, i) => {
+                html += `<div class="team-tag" onclick="editTeam(${i})">
+                    <div class="team-color-dot" style="background:${team.color}"></div>
+                    <span>${team.name}</span>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // Timeline editing
+        document.getElementById('editTimelineBtn').onclick = function(e) {
+            e.stopPropagation();
+            document.getElementById('timelineStartDate').value = ganttData.startDate.toISOString().split('T')[0];
+            document.getElementById('timelineEndDate').value = ganttData.endDate.toISOString().split('T')[0];
+            openModal('editTimelineModal');
+        };
+
+        function saveTimeline() {
+            ganttData.startDate = new Date(document.getElementById('timelineStartDate').value);
+            ganttData.endDate = new Date(document.getElementById('timelineEndDate').value);
+            generateTimeline();
+            renderGantt();
+            closeModal('editTimelineModal');
+        }
+
+        // Milestone editing
+        function editMilestone(i) {
+            document.getElementById('editMilestoneIndex').value = i;
+            document.getElementById('milestoneName').value = ganttData.tasks[i].name;
+            openModal('editMilestoneModal');
+        }
+
+        function saveMilestone() {
+            const i = parseInt(document.getElementById('editMilestoneIndex').value);
+            ganttData.tasks[i].name = document.getElementById('milestoneName').value;
+            renderGantt();
+            closeModal('editMilestoneModal');
+        }
+
+        function deleteMilestone() {
+            const i = parseInt(document.getElementById('editMilestoneIndex').value);
+            if (confirm('Delete this milestone?')) {
+                ganttData.tasks.splice(i, 1);
+                renderGantt();
+                closeModal('editMilestoneModal');
+            }
+        }
+
+        // Add milestone
+        document.getElementById('addMilestoneBtn').onclick = function() {
+            document.getElementById('newMilestoneName').value = '';
+            openModal('addMilestoneModal');
+        };
+
+        function addNewMilestone() {
+            const name = document.getElementById('newMilestoneName').value;
+            if (name) {
+                const start = new Date(ganttData.startDate);
+                const end = new Date(start.getTime() + 7*86400000);
+                ganttData.tasks.push({
+                    name, 
+                    start: start.toISOString().split('T')[0],
+                    end: end.toISOString().split('T')[0],
+                    color: '#32b8c6',
+                    label: '1w'
+                });
+                renderGantt();
+                closeModal('addMilestoneModal');
+            }
+        }
+
+        // Bar editing
+        function editBar(i) {
+            const task = ganttData.tasks[i];
+            document.getElementById('editBarIndex').value = i;
+            document.getElementById('barLabel').value = task.label || '';
+            document.getElementById('barColor').value = task.color;
+            document.getElementById('barColorPreview').style.backgroundColor = task.color;
+            document.getElementById('barStartDate').value = task.start;
+            document.getElementById('barEndDate').value = task.end;
+            openModal('editBarModal');
+        }
+
+        function saveBar() {
+            const i = parseInt(document.getElementById('editBarIndex').value);
+            ganttData.tasks[i].label = document.getElementById('barLabel').value;
+            ganttData.tasks[i].color = document.getElementById('barColor').value;
+            ganttData.tasks[i].start = document.getElementById('barStartDate').value;
+            ganttData.tasks[i].end = document.getElementById('barEndDate').value;
+            renderGantt();
+            closeModal('editBarModal');
+        }
+
+        function deleteBar() {
+            const i = parseInt(document.getElementById('editBarIndex').value);
+            if (confirm('Delete this bar?')) {
+                ganttData.tasks.splice(i, 1);
+                renderGantt();
+                closeModal('editBarModal');
+            }
+        }
+
+        // Separator management
+        document.getElementById('addSeparatorBtn').onclick = function(e) {
+            e.stopPropagation();
+            document.getElementById('separatorLabel').value = '';
+            document.getElementById('separatorColor').value = '#dc3545';
+            document.getElementById('separatorColorPreview').style.backgroundColor = '#dc3545';
+            document.getElementById('separatorPosition').value = '50';
+            openModal('addSeparatorModal');
+        };
+
+        function addNewSeparator() {
+            const label = document.getElementById('separatorLabel').value;
+            const color = document.getElementById('separatorColor').value;
+            const position = parseFloat(document.getElementById('separatorPosition').value);
+
+            if (label) {
+                ganttData.separators.push({ label, color, position });
+                renderSeparators();
+                closeModal('addSeparatorModal');
+            }
+        }
+
+        function editSeparatorClick(i) {
+            document.getElementById('editSeparatorIndex').value = i;
+            document.getElementById('editSeparatorLabel').value = ganttData.separators[i].label;
+            document.getElementById('editSeparatorColor').value = ganttData.separators[i].color;
+            document.getElementById('editSeparatorColorPreview').style.backgroundColor = ganttData.separators[i].color;
+            openModal('editSeparatorModal');
+        }
+
+        function saveSeparator() {
+            const i = parseInt(document.getElementById('editSeparatorIndex').value);
+            ganttData.separators[i].label = document.getElementById('editSeparatorLabel').value;
+            ganttData.separators[i].color = document.getElementById('editSeparatorColor').value;
+            renderSeparators();
+            closeModal('editSeparatorModal');
+        }
+
+        function deleteSeparator() {
+            const i = parseInt(document.getElementById('editSeparatorIndex').value);
+            if (confirm('Delete this separator?')) {
+                ganttData.separators.splice(i, 1);
+                renderSeparators();
+                closeModal('editSeparatorModal');
+            }
+        }
+
+        // Team management
+        document.getElementById('addTeamBtn').onclick = function() {
+            document.getElementById('newTeamName').value = '';
+            document.getElementById('newTeamColor').value = '#32b8c6';
+            document.getElementById('newTeamColorPreview').style.backgroundColor = '#32b8c6';
+            openModal('addTeamModal');
+        };
+
+        function saveNewTeam() {
+            const name = document.getElementById('newTeamName').value;
+            if (name) {
+                ganttData.teams.push({
+                    name,
+                    color: document.getElementById('newTeamColor').value
+                });
+                renderTeams();
+                closeModal('addTeamModal');
+            }
+        }
+
+        function editTeam(i) {
+            document.getElementById('editTeamIndex').value = i;
+            document.getElementById('editTeamName').value = ganttData.teams[i].name;
+            document.getElementById('editTeamColor').value = ganttData.teams[i].color;
+            document.getElementById('editTeamColorPreview').style.backgroundColor = ganttData.teams[i].color;
+            openModal('editTeamModal');
+        }
+
+        function saveTeam() {
+            const i = parseInt(document.getElementById('editTeamIndex').value);
+            ganttData.teams[i].name = document.getElementById('editTeamName').value;
+            ganttData.teams[i].color = document.getElementById('editTeamColor').value;
+            renderTeams();
+            closeModal('editTeamModal');
+        }
+
+        function deleteTeam() {
+            const i = parseInt(document.getElementById('editTeamIndex').value);
+            if (confirm('Delete this team?')) {
+                ganttData.teams.splice(i, 1);
+                renderTeams();
+                closeModal('editTeamModal');
+            }
+        }
+
+        // Initialize
+        generateTimeline();
+        renderGantt();
+        renderTeams();
+    </script>
+
 </body>
 </html>
