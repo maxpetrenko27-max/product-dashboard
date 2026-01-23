@@ -1466,30 +1466,48 @@
 
         // Render gantt chart with drag-drop
         function renderGantt() {
-    const container = document.querySelector('.gantt-grid');
-    container.innerHTML = '';
+    const milestones = document.getElementById('ganttMilestonesList');
+    const bars = document.getElementById('ganttBarsList');
     
-    // Header
-    container.innerHTML = `
-        <div class="gantt-milestone-header">...</div>
-        <div class="gantt-timeline-months">...</div>
-    `;
+    let mHtml = '';
+    let bHtml = '';
     
-    // Each milestone = one line grid
     ganttData.tasks.forEach((task, i) => {
-        const pos = calcBarPos(task.start, task.end);
-        
-        // Adding connected elements to grid
-        container.innerHTML += `
-            <div class="gantt-milestone-cell" ...>${task.name}</div>
-            <div class="gantt-bar-cell">
-                <div class="gantt-bar" style="left:${pos.left}px;width:${pos.width}px;background:${task.color}">
-                    ${task.label}
-                </div>
+        // Milestone
+        mHtml += `
+            <div class="gantt-milestone-cell" 
+                 draggable="true" 
+                 data-index="${i}"
+                 ondragstart="handleMilestoneDragStart(event, ${i})"
+                 ondragover="handleMilestoneDragOver(event)"
+                 ondrop="handleMilestoneDrop(event, ${i})"
+                 ondragend="handleMilestoneDragEnd(event)"
+                 onclick="editMilestone(${i})">
+                <div class="gantt-milestone-text">${task.name}</div>
+                <span class="edit-icon">✎</span>
             </div>
         `;
+        
+        // ALWAYS creating cluster for bar
+        const pos = calcBarPos(task.start, task.end);
+        
+        // Check bar on its position
+        let barContent = '';
+        if (pos.left >= 0 && pos.left < getTotalWidth()) {
+            barContent = `
+                <div class="gantt-bar" 
+                     style="left:${pos.left}px; width:${pos.width}px; background-color:${task.color}"
+                     onclick="editBar(${i})">
+                    ${task.label || ''}
+                </div>
+            `;
+        }
+        
+        bHtml += `<div class="gantt-bar-cell">${barContent}</div>`;
     });
-}
+    
+    milestones.innerHTML = mHtml;
+    bars.innerHTML = bHtml;
     
     renderSeparators();
 }
