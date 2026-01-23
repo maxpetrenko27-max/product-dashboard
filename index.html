@@ -1466,33 +1466,49 @@
 
         // Render gantt chart with drag-drop
         function renderGantt() {
-            const milestones = document.getElementById('ganttMilestonesList');
-            const bars = document.getElementById('ganttBarsList');
-
-            let mHtml = '', bHtml = '';
-            ganttData.tasks.forEach((task, i) => {
-                mHtml += `<div class="gantt-milestone-cell" draggable="true" data-index="${i}" 
-                          ondragstart="handleMilestoneDragStart(event, ${i})"
-                          ondragover="handleMilestoneDragOver(event)"
-                          ondrop="handleMilestoneDrop(event, ${i})"
-                          ondragend="handleMilestoneDragEnd(event)"
-                          onclick="editMilestone(${i})">
-                    <div class="gantt-milestone-text">${task.name}</div>
-                    <span class="edit-icon">✎</span>
-                </div>`;
-
-                const pos = calcBarPos(task.start, task.end);
-                bHtml += `<div class="gantt-bar-cell">
-                    <div class="gantt-bar" style="left:${pos.left}px;width:${pos.width}px;background:${task.color}" 
-                         onclick="editBar(${i})">${task.label || ''}</div>
-                </div>`;
-            });
-
-            milestones.innerHTML = mHtml;
-            bars.innerHTML = bHtml;
-
-            renderSeparators();
-        }
+    const milestones = document.getElementById('ganttMilestonesList');
+    const bars = document.getElementById('ganttBarsList');
+    
+    // Container clean
+    milestones.innerHTML = '';
+    bars.innerHTML = '';
+    
+    // Each task rendering at the same time
+    ganttData.tasks.forEach((task, i) => {
+        // 1. Milestone creation
+        const milestoneDiv = document.createElement('div');
+        milestoneDiv.className = 'gantt-milestone-cell';
+        milestoneDiv.draggable = true;
+        milestoneDiv.dataset.index = i;
+        milestoneDiv.ondragstart = (e) => handleMilestoneDragStart(e, i);
+        milestoneDiv.ondragover = handleMilestoneDragOver;
+        milestoneDiv.ondrop = (e) => handleMilestoneDrop(e, i);
+        milestoneDiv.ondragend = handleMilestoneDragEnd;
+        milestoneDiv.onclick = () => editMilestone(i);
+        milestoneDiv.innerHTML = `
+            <div class="gantt-milestone-text">${task.name}</div>
+            <span class="edit-icon">✎</span>
+        `;
+        
+        // 2. Bar creation with presize position
+        const pos = calcBarPos(task.start, task.end);
+        const barCell = document.createElement('div');
+        barCell.className = 'gantt-bar-cell';
+        barCell.innerHTML = `
+            <div class="gantt-bar" 
+                 style="left:${pos.left}px;width:${pos.width}px;background-color:${task.color}"
+                 onclick="editBar(${i})">
+                ${task.label || ''}
+            </div>
+        `;
+        
+        // 3. Adding in syncro way
+        milestones.appendChild(milestoneDiv);
+        bars.appendChild(barCell);
+    });
+    
+    renderSeparators();
+}
 
         // Milestone drag-drop functions
         function handleMilestoneDragStart(e, index) {
