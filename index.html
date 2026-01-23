@@ -397,10 +397,17 @@
         }
 
         .gantt-grid {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            min-width: 100%;
-        }
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-auto-rows: minmax(48px, auto); 
+}
+
+.gantt-milestone-cell,
+.gantt-bar-cell {
+    min-height: 48px; 
+    max-height: 48px; 
+    overflow: hidden;
+}
 
         .gantt-milestones {
             background: var(--color-cream-50);
