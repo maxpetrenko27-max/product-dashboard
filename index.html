@@ -1336,32 +1336,42 @@
             startDate: new Date('2025-06-01'),
             endDate: new Date('2026-10-31'),
             tasks: [
-                {name: 'Game concept ideation + draft math (PO, Math team)', start: '2025-06-01', end: '2025-06-28', color: '#FF6B6B'},
-                {name: 'Game design (UI/UX, Graphic)', start: '2025-07-01', end: '2025-08-24', color: '#4ECDC4', label: '8w'},
-                {name: 'Game design (Game Art)', start: '2025-07-15', end: '2025-09-21', color: '#4ECDC4', label: '10w'},
-                {name: 'Interim math files review', start: '2025-08-01', end: '2025-08-21', color: '#FF6B6B', label: '3w'},
-                {name: 'Game classification approval', start: '2025-08-15', end: '2025-08-28', color: '#95E1D3', label: '2w'},
-                {name: 'Bet classification approval', start: '2025-08-20', end: '2025-09-02', color: '#95E1D3', label: '2w'},
-                {name: 'Game development basic logic', start: '2025-09-01', end: '2025-12-21', color: '#FFD93D', label: '16w'},
-                {name: 'Server simulations', start: '2025-12-15', end: '2025-12-28', color: '#FFD93D', label: '2w'},
-                {name: 'Data model creation', start: '2025-10-01', end: '2025-10-21', color: '#FFD93D', label: '3w'},
-                {name: 'Data model sign-off', start: '2025-10-20', end: '2025-11-09', color: '#95E1D3', label: '3w'},
-                {name: 'Game development FRONTEND', start: '2025-11-01', end: '2026-01-25', color: '#FFD93D', label: '12w'},
-                {name: 'DWH events, GSA, GHA', start: '2026-01-01', end: '2026-01-28', color: '#FFD93D', label: '4w'},
-                {name: 'Back Office support', start: '2026-02-01', end: '2026-02-28', color: '#95E1D3', label: '4w'},
-                {name: 'Refund Tool', start: '2026-03-01', end: '2026-03-21', color: '#FFD93D', label: '3w'},
-                {name: 'Go Live Checklist', start: '2026-06-01', end: '2026-07-26', color: '#FFD93D', label: '8w'},
-                {name: 'Certification', start: '2026-07-01', end: '2026-08-25', color: '#A8E6CF', label: '8w'}
+                {name: 'Game concept ideation + draft math (PO, Math team)', start: '2025-06-01', end: '2025-11-30', color: 'LightCoral'},
+                {name: 'Game design (UI/UX, Graphic design)', start: '2025-08-01', end: '2026-04-12', color: '#Yellow'},
+                {name: 'Game design (Game Art)', start: '2025-12-01', end: '2026-03-08', color: '#Yellow'},
+                {name: 'Interim math files - review and approval (Math team, PO, Game PDM)', start: '2025-11-01', end: '2025-11-30', color: 'LightCoral'},
+                {name: 'Game classification approval (Data API, Compliance Manager)', start: '2025-12-01', end: '2025-12-31', color: 'LightCoral'},
+                {name: 'Bet classification approval (Data API, GIR)'},
+                {name: 'Uniforms design'},
+                {name: 'Studio building', start: '2026-02-16', end: '2026-03-08', color: 'DeepSkyBlue', label: '3w'},
+                {name: 'Game development basic logic (BACKEND + QA Game Team)', start: '2026-02-16', end: '2026-06-07', color: 'OrangeRed', label: '16+w - depends on interim math files, bets & game classification approval'},
+                {name: 'Server simulations (Game team)', start: '2026-05-04', end: '2026-05-24', color: 'OrangeRed', label: '2+w - depends on base game logic which must be done'},
+                {name: 'Final math sign-off (Math team; PO)', start: '2026-05-18', end: '2026-05-24', color: 'LightCoral'},
+                {name: 'Data model creation (BA Game Team)', start: '2026-02-09', end: '2026-02-22', color: 'LightCoral'},
+                {name: 'Data model sign-off (Data Analytics, RIO, GIR, Data API)', start: '2026-02-23', end: '2026-03-15', color: 'DeepSkyBlue', label: '3w'},
+                {name: 'Game development the rest scope of work (BACKEND + QA Game Team)', start: '2026-05-25', end: '2026-06-12', color: 'OrangeRed', label: '8+w to implement the rest of BE scope of work'},
+                {name: 'Game development (FRONTEND + QA Game Team)', start: '2026-03-23', end: '2026-06-14', color: 'OrangeRed', label: '12+w - after UI and Graphic design are signed off, BACKEND bootstrap implemented'},
+                {name: 'Game development (UNREAL ENGINE + QA Game Team)', start: '2026-04-06', end: '2026-07-19', color: 'OrangeRed'},
+                {name: 'DWH events, GSA,  GHA, Integrity messages (Game team)', start: '2026-05-25', end: '2026-07-05', color: 'OrangeRed', label: '4w - after the data model is approved and the game logic implemented'},
+                {name: 'Implement DWH - API implementation (Data API)', start: '2026-06-29', end: '2026-08-09', color: 'DeepSkyBlue'},
+                {name: 'Back Office support for Alpha (PAT, GAT, Game Integrity) (RIO)', start: '2026-06-29', end: '2026-09-13', color: 'DeepSkyBlue'},
+                {name: 'Refund Tool ( BACKEND Game Team)', start: '2026-04-27', end: '2026-05-17', color: 'OrangeRed', label: '3w'},
+                {name: 'Refund Tool support (RIO)', start: '2026-05-18', end: '2026-06-14', color: 'DeepSkyBlue', label: '3-4w'},
+                {name: 'Data generated by bot (GIR)', start: '2026-06-08', end: '2026-07-05', color: 'DeepSkyBlue', label: '3-4w'},
+                {name: 'Lobby support (Lobby)', start: '2026-06-15', end: '2026-07-19', color: 'DeepSkyBlue', label: '3-4w'},
+                {name: 'Go Live Checklist - contract testing (QA Game Team)', start: '2026-05-18', end: '2026-07-19', color: 'OrangeRed', label: '8w'},
+                {name: 'Certification', start: '2026-06-29', end: '2026-10-01', color: 'Green', label: 'min 8w'}
+
             ],
             teams: [
-                {name: 'Math team + PO', color: '#FF6B6B'},
-                {name: 'MOW game team', color: '#FFD93D'},
-                {name: 'Stakeholders', color: '#95E1D3'},
-                {name: 'Design', color: '#4ECDC4'},
-                {name: 'Certification', color: '#A8E6CF'}
+                {name: 'Math team + PO', color: 'LightCoral'},
+                {name: 'Game team', color: 'OrangeRed'},
+                {name: 'Stakeholders', color: 'DeepSkyBlue'},
+                {name: 'Design', color: 'Yellow'},
+                {name: 'Certification', color: 'Green'}
             ],
             separators: [
-                {label: 'ICE 2026', position: 50, color: '#dc3545'}
+                {label: 'ICE 2026', position: 50, color: 'Red'}
             ]
         };
 
